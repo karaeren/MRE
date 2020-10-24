@@ -1,1 +1,1 @@
-# MRE
+# Movie Recommendation Engine
