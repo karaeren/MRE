@@ -24,6 +24,12 @@ class TestDTO : public oatpp::DTO {
     DTO_FIELD(String, html);
 };
 
+class MathDTO : public oatpp::DTO {
+    DTO_INIT(MathDTO, DTO)
+
+    DTO_FIELD(Int32, result);
+};
+
 #include OATPP_CODEGEN_END(DTO)
 
 #endif /* DTOs_hpp */
