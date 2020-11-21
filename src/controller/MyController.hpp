@@ -48,7 +48,7 @@ class MyController : public oatpp::web::server::api::ApiController {
     ENDPOINT("GET", "/simpleMath/{x}/{y}", simpleMathRoute,
              PATH(Int32, x),
              PATH(Int32, y)) {
-        int res =  test::simpleMath(x,y);
+        int res = test::simpleMath(x, y);
 
         auto dto = MathDTO::createShared();
         dto->result = res;
