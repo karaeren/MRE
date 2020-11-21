@@ -5,9 +5,9 @@
 			"type": "shell",
 			"label": "Build Project",
 			"options": {
-				"cwd": "${workspaceFolder}/dist",
+				"cwd": "${workspaceFolder}/utility",
 			},
-			"command": "rm -rf ${workspaceFolder}/dist/* && cmake .. && make",
+			"command": "./build.sh",
 			"group": {
 				"kind": "build",
 				"isDefault": true
