@@ -3,6 +3,8 @@
 
 # Compiled Object files
 *.slo
+dist
+
 *.lo
 *.o
 *.obj
