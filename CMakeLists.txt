@@ -4,6 +4,8 @@ set(project_name mre)
 
 project(${project_name})
 
+include_directories(include)
+
 set(CMAKE_CXX_STANDARD 11)
 
 add_library(${project_name}-lib
