@@ -1,0 +1,47 @@
+#include "similarity.hpp"
+
+float Similarity::sim_distance(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2) {
+    unordered_map<string, int> si;
+    unordered_map<string, int> items_person1;
+    unordered_map<string, int> items_person2;
+
+    items_person1 = prefs[person1];
+    items_person2 = prefs[person2];
+
+
+    for (auto x : items_person1) {
+        //x.first = film adi
+        //x.second = rank
+        for (auto y : items_person2) {
+
+            if (x.first == y.first) {
+                si[x.first] = 1;
+            }
+        }
+    }
+
+    int si_counter = 0;
+    for (auto i : si) {
+        si_counter += 1;
+    }
+    if (si_counter == 0) {
+        return 0.0;
+    }
+
+    float sum_of_squares = 0;
+    for (auto x : si) {
+        string item = x.first;
+        float farklar = (float)(prefs[person1][item] - prefs[person2][item]);
+        sum_of_squares += pow(farklar, 2.0);
+    }
+    return 1 / (1 + sqrt(sum_of_squares));
+
+}
+
+Similarity::Similarity()
+{
+}
+
+Similarity::~Similarity()
+{
+}
