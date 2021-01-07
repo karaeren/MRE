@@ -10,4 +10,5 @@ public:
 	~Recomend();
 
 	tuple < float, string>* TopMatches(unordered_map<string, unordered_map<string, int> > dataset, string person, Similarity *sim);
+	tuple < float, string>* getRecommendations(unordered_map<string, unordered_map<string, int> > dataset, string person, Similarity* sim);
 };
