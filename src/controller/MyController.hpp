@@ -26,24 +26,65 @@ class MyController : public oatpp::web::server::api::ApiController {
     }
 
    public:
-    ENDPOINT("GET", "/hello", root) {
-        auto dto = MyDto::createShared();
+    ENDPOINT("GET", "/", root) {
+        auto dto = RootDTO::createShared();
+
         dto->statusCode = 200;
         dto->message = "Hello World!";
+
         return createDtoResponse(Status::CODE_200, dto);
     }
 
-    ENDPOINT_INFO(test) {
-        info->summary = "test";
+    ENDPOINT_INFO(movies) {
+        info->summary = "List movies in the database.";
     }
-    ENDPOINT("GET", "test", test) {
-        auto dto = TestDTO::createShared();
+    ENDPOINT("GET", "movies", movies) {
+        auto dto = MoviesDTO::createShared();
+
         dto->statusCode = 200;
-        dto->html = "<b>test</b>";
+
+        // TODO: List movies to the user with pagination system.
+        dto->page = 1;
+        dto->movies = "movie list";
+
         return createDtoResponse(Status::CODE_200, dto);
     }
 
-    ENDPOINT_INFO(jsontest) {
+    ENDPOINT_INFO(recommendedMovies) {
+        info->summary = "List recommended movies for the user based on their preferences.";
+    }
+    ENDPOINT("GET", "recommended-movies", recommendedMovies,
+             QUERY(String, username, "u")) {
+        auto dto = RecommendedMoviesDTO::createShared();
+
+        dto->statusCode = 200;
+
+        // TODO: List movies to the user with pagination system.
+        dto->movies = "movie list";
+
+        return createDtoResponse(Status::CODE_200, dto);
+    }
+
+    ENDPOINT_INFO(rateMovie) {
+        info->summary = "Let the user rate a movie from 0 to 5.";
+    }
+    ENDPOINT("GET", "/rate-movie", rateMovie,
+             QUERY(String, username, "u"),
+             QUERY(Int32, movieId, "m"),
+             QUERY(Float32, rating, "r")) {
+        //std::cout << username->getData() << " voted " << movieId << " with a score of " << rating << "\n";
+
+        auto dto = RateMovieDTO::createShared();
+
+        dto->statusCode = 200;
+
+        // TODO: Add user's rating to their profile in the db.
+        dto->result = "success";
+
+        return createDtoResponse(Status::CODE_200, dto);
+    }
+
+    /* ENDPOINT_INFO(jsontest) {
         info->summary = "test json stuff";
     }
     ENDPOINT("GET", "testjson", jsontest) {
@@ -57,7 +98,7 @@ class MyController : public oatpp::web::server::api::ApiController {
         // 2. Modify it by DOM.
         rapidjson::Value& dbType = d["dbType"];
         dbType.SetString("JSON");
-        
+
         rapidjson::Value& count = d["count"];
         count.SetInt(count.GetInt() + 1);
 
@@ -92,7 +133,7 @@ class MyController : public oatpp::web::server::api::ApiController {
         dto->result = res;
 
         return createDtoResponse(Status::CODE_200, dto);
-    }
+    } */
 };
 
 #include OATPP_CODEGEN_END(ApiController)  //<-- End Codegen
