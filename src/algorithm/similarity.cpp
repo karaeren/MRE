@@ -8,12 +8,10 @@ float Similarity::sim_distance(unordered_map<string, unordered_map<string, int> 
     items_person1 = prefs[person1];
     items_person2 = prefs[person2];
 
-
     for (auto x : items_person1) {
         //x.first = film adi
         //x.second = rank
         for (auto y : items_person2) {
-
             if (x.first == y.first) {
                 si[x.first] = 1;
             }
@@ -35,11 +33,9 @@ float Similarity::sim_distance(unordered_map<string, unordered_map<string, int> 
         sum_of_squares += pow(farklar, 2.0);
     }
     return 1 / (1 + sqrt(sum_of_squares));
-
 }
 //
-float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2){
-    
+float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2) {
     unordered_map<string, int> si;
     unordered_map<string, int> items_person1;
     unordered_map<string, int> items_person2;
@@ -47,12 +43,10 @@ float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> >
     items_person1 = prefs[person1];
     items_person2 = prefs[person2];
 
-
     for (auto x : items_person1) {
         //x.first = film adi
         //x.second = rank
         for (auto y : items_person2) {
-
             if (x.first == y.first) {
                 si[x.first] = 1;
             }
@@ -67,19 +61,17 @@ float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> >
         return 0.0;
     }
 
-    
-    float sum1= 0, sum1Sq = 0;
+    float sum1 = 0, sum1Sq = 0;
     float sum2 = 0, sum2Sq = 0;
     float pSum = 0;
     for (auto puanlar : si) {
         sum1 += prefs[person1][puanlar.first];
         sum1Sq += pow(prefs[person1][puanlar.first], 2.0);
-        
+
         sum2 += prefs[person2][puanlar.first];
         sum2Sq += pow(prefs[person2][puanlar.first], 2.0);
-        
+
         pSum += prefs[person2][puanlar.first] * prefs[person1][puanlar.first];
-    
     }
 
     //Calculate r (Pearson score)
@@ -96,10 +88,8 @@ float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> >
     return result;
 }
 
-Similarity::Similarity()
-{
+Similarity::Similarity() {
 }
 
-Similarity::~Similarity()
-{
+Similarity::~Similarity() {
 }

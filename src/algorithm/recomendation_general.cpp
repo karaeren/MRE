@@ -1,10 +1,10 @@
 
 #include <iostream>
+#include <tuple>
 #include <unordered_map>
-#include<tuple>
-#include "similarity.hpp"
-#include "recomend.hpp"
 
+#include "recomend.hpp"
+#include "similarity.hpp"
 
 using namespace std;
 
@@ -13,6 +13,7 @@ unordered_map<string, int> ranks2;
 unordered_map<string, int> ranks3;
 unordered_map<string, int> ranks4;
 unordered_map<string, int> ranks5;
+unordered_map<string, int> ranks6;
 unordered_map<string, unordered_map<string, int> > critics;
 
 /*
@@ -46,50 +47,53 @@ Sonraki eklenecek datasetlerde benzer bir sekilde kullanilacaktir.
 
 */
 
-
-
-int main()
-{
+int main() {
     ranks1["Lady in the Water"] = 3;
     ranks2["Lady in the Water"] = 3;
     ranks3["Lady in the Water"] = 1;
     ranks4["Lady in the Water"] = 4;
-    ranks5["Lady in the Water"] = 3; //
+    ranks5["Lady in the Water"] = 3;  //
+    ranks6["Lady in the Water"] = 3;
+
     ranks1["Snakes on a Plane"] = 1;
     ranks2["Snakes on a Plane"] = 3;
     ranks3["Snakes on a Plane"] = 4;
     ranks4["Snakes on a Plane"] = 4;
-    ranks5["Snakes on a Plane"] = 2; //
+    ranks5["Snakes on a Plane"] = 2;  //
+    ranks6["Snakes on a Plane"] = 1;
 
-    ranks1["Just My Luck"] = 4;
     ranks2["Just My Luck"] = 3;
     ranks3["Just My Luck"] = 1;
     ranks4["Just My Luck"] = 2;
-    ranks5["Just My Luck"] = 2;
-
+    ranks5["Just My Luck"] = 5;
+    ranks6["Just My Luck"] = 3;
 
     critics["kadir"] = ranks1;
     critics["ayse"] = ranks2;
     critics["fatma"] = ranks3;
     critics["ahmet"] = ranks4;
     critics["mehmet"] = ranks5;
+    critics["eren"] = ranks6;
 
-
-    
     for (auto x : critics) {
         cout << endl;
         cout << x.first << " soyle oylar kullandi :" << endl;
         for (auto y : x.second) {
             cout << y.first << " : " << y.second << endl;
         }
-
     };
     string key = "kadir";
 
-    Similarity* b = nullptr;
-    //float sa = a.sim_distance(critics,key,"ayse");
-    
     Recomend a{};
-    a.TopMatches(critics, key, b);
+    Similarity* b = nullptr;
+    tuple<float, string>* test = a.TopMatches(critics, key, b);
 
+    for (int i = 0; i < 5; i++) {
+        std::cout << i << " topMatch: " << std::get<1>(test[i]) << "-" << std::get<0>(test[i]) << "\n";
+    }
+    std::cout << "\n";
+    tuple<float, string>* test2 = a.getRecommendations(critics, key, b);
+    for (int i = 0; i < 5; i++) {
+        std::cout << i << " getRecommendations: " << std::get<1>(test2[i]) << "-" << std::get<0>(test2[i]) << "\n";
+    }
 }
