@@ -5,6 +5,7 @@
 
 #include "algorithm/test.hpp"
 #include "db/jsonDb.hpp"
+#include "db/userDb.hpp"
 #include "dto/DTOs.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
@@ -76,9 +77,10 @@ class MyController : public oatpp::web::server::api::ApiController {
 
         auto dto = RateMovieDTO::createShared();
 
-        dto->statusCode = 200;
+        UserDB udb_instance("../data/user.json");
+        bool test = udb_instance.addRating(username->std_str(), movieId, rating);
 
-        // TODO: Add user's rating to their profile in the db.
+        dto->statusCode = 200;
         dto->result = "success";
 
         return createDtoResponse(Status::CODE_200, dto);
