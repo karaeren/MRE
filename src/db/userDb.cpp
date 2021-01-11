@@ -3,10 +3,54 @@
 #include <string>
 
 #include "oatpp/core/Types.hpp"
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
 
 bool UserDB::addRating(std::string username, int movieId, float rating) {
-    std::cout << "Saving: " << username << " voted " << movieId << " with a score of " << rating << "\n";
-    // todo: database kaydet
+    // write db contents to a string
+    std::string dbContent = readFile("{\"users\":{}");
+
+    // parse the string
+    rapidjson::Document d;
+    d.Parse(dbContent.c_str());
+
+    // add movie to users rating list
+    auto& allocator = d.GetAllocator();
+    if (!d.HasMember(username.c_str())) { // first entry of user
+        rapidjson::Value userData(rapidjson::kObjectType);  // empty object
+
+        rapidjson::Value movie;
+        movie.SetFloat(rating);
+
+        std::string s = std::to_string(movieId);
+        rapidjson::Value movieKey(s.c_str(), s.size(), allocator);
+        userData.AddMember(movieKey, movie, allocator);
+
+        rapidjson::Value usernameKey(username.c_str(), username.size(), allocator);
+        d.AddMember(usernameKey, userData, allocator);
+    } else {
+        rapidjson::Value& userData = d[username.c_str()];
+
+        std::string s = std::to_string(movieId);
+        rapidjson::Value movieKey(s.c_str(), s.size(), allocator);
+        
+        // check for duplicates
+        if (userData.HasMember(movieKey)) return false;
+
+        rapidjson::Value movie;
+        movie.SetFloat(rating);
+
+        userData.AddMember(movieKey, movie, allocator);
+    }
+
+    // stringify dom
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    d.Accept(writer);
+
+    // save file
+    writeFile(buffer.GetString());
 
     return true;
 }
