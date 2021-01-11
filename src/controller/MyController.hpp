@@ -1,7 +1,10 @@
 #ifndef MyController_hpp
 #define MyController_hpp
 
+#include <assert.h>
+
 #include <string>
+#include <unordered_map>
 
 #include "algorithm/test.hpp"
 #include "db/jsonDb.hpp"
@@ -16,6 +19,9 @@
 #include OATPP_CODEGEN_BEGIN(ApiController)  //<-- Begin Codegen
 
 class MyController : public oatpp::web::server::api::ApiController {
+   private:
+    std::unordered_map<int, std::unordered_map<int, float> > critics;
+
    public:
     /**
    * Constructor with object mapper.
@@ -23,11 +29,46 @@ class MyController : public oatpp::web::server::api::ApiController {
    */
     MyController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
         : oatpp::web::server::api::ApiController(objectMapper) {
+        std::cout << "Starting to parse the dataset...\n";
+
+        JsonDB db("../data/ratings.json");
+        const std::string dbContent = db.readFile();
+
+        // 1. Parse JSON string into DOM.
+        rapidjson::Document d;
+        d.Parse(dbContent.c_str());
+        assert(d.IsObject());
+
+        const rapidjson::Value& r = d["ratings"];
+        assert(r.IsArray());
+
+        for (rapidjson::SizeType i = 0; i < r.Size(); i++) {
+            const rapidjson::Value& rating = r[i];
+            assert(rating.IsObject());
+            //std::cout << rating["uid"].GetInt() << " has voted " << rating["id"].GetInt() << " with a score of " << rating["r"].GetFloat() << "\n";
+
+            if (critics.find(rating["uid"].GetInt()) == critics.end()) {
+                std::unordered_map<int, float> temp;
+                critics[rating["uid"].GetInt()] = temp;
+            }
+
+            auto ele = critics.find(rating["uid"].GetInt());
+            ele->second[rating["id"].GetInt()] = rating["r"].GetFloat();
+        }
+
+        std::cout << "Done with the dataset parsing.\n";
     }
 
    public:
     ENDPOINT("GET", "/", root) {
         auto dto = RootDTO::createShared();
+
+        for(auto x : critics) {
+            std::cout << "Critic " << x.first << " voted these movies:\n";
+            for(auto y : x.second) {
+                std::cout << "Movie: " << y.first << ", rating: " << y.second << "\n";
+            }
+        }
 
         dto->statusCode = 200;
         dto->message = "Hello World!";
@@ -77,8 +118,6 @@ class MyController : public oatpp::web::server::api::ApiController {
         auto dto = RateMovieDTO::createShared();
 
         dto->statusCode = 200;
-
-        // TODO: Add user's rating to their profile in the db.
         dto->result = "success";
 
         return createDtoResponse(Status::CODE_200, dto);
