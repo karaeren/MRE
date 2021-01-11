@@ -9,7 +9,7 @@
 
 bool UserDB::addRating(std::string username, int movieId, float rating) {
     // write db contents to a string
-    std::string dbContent = readFile("{\"users\":{}");
+    std::string dbContent = readFile("{}");
 
     // parse the string
     rapidjson::Document d;
