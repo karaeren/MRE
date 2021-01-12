@@ -14,6 +14,7 @@ class Similarity {
 
     float sim_distance(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2);
     float sim_pearson(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2);
+    unordered_map<string, unordered_map<string, int> > transformPrefs(unordered_map<string, unordered_map<string, int> > prefs);
 };
 
 #endif

@@ -9,7 +9,8 @@ class Recomend {
    public:
     Recomend();
     ~Recomend();
-
+    
     tuple<float, string>* TopMatches(unordered_map<string, unordered_map<string, int> > dataset, string person, Similarity* sim);
     tuple<float, string>* getRecommendations(unordered_map<string, unordered_map<string, int> > dataset, string person, Similarity* sim);
+    unordered_map<string, unordered_map<string, int> > calculateSimilarItem(unordered_map<string, unordered_map<string, int> > prefs,Similarity* sim);
 };

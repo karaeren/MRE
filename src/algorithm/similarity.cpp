@@ -87,6 +87,23 @@ float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> >
 
     return result;
 }
+unordered_map<string, unordered_map<string, int> > Similarity::transformPrefs(unordered_map<string, unordered_map<string, int> > prefs) {
+    unordered_map<string, unordered_map<string, int>> si;
+
+    for(auto person:prefs){
+        
+        for (auto item:prefs[person.first]){
+            unordered_map<string, int> si2;
+            if(si.find(item.first) == si.end()) {
+                si[item.first] = {};
+            }
+            si[item.first][person.first]=prefs[person.first][item.first];
+        }
+
+    }
+    return si;
+}
+
 
 Similarity::Similarity() {
 }

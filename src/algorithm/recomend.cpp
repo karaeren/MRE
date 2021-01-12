@@ -64,7 +64,7 @@ tuple<float, string>* Recomend::getRecommendations(unordered_map<string, unorder
 
                 if (is_item_in_dataset_person == false || dataset[person][item.first] == 0) {
                     //Similarity * Score
-                    totals[item.first] = 0.0f;
+                    totals[item.first] = 0.0f;//burası kanka
                     totals[item.first] += dataset[other.first][item.first] * sim_value;
                     len_totals += 1;
                     //Sum of similarities
@@ -97,4 +97,24 @@ tuple<float, string>* Recomend::getRecommendations(unordered_map<string, unorder
     }
 
     return rankings;
+}
+unordered_map<string, unordered_map<string, int> > Recomend::calculateSimilarItem(unordered_map<string, unordered_map<string, int> > prefs,Similarity* sim) {
+    unordered_map<string,tuple<float, string>*> si;
+    unordered_map<string, unordered_map<string, int>> itemPrefs;
+    
+    int bayrak=0;
+    int n=10;
+    itemPrefs=sim->transformPrefs(prefs);
+    for(auto item:itemPrefs){
+        bayrak+=1;
+        if (bayrak%100==0){
+            //ekrana yazdırmamıza gerek yok
+
+        }
+        tuple<float, string>* scores;
+        scores=TopMatches(itemPrefs,item.first,sim);
+        si[item.first]=scores;
+        
+    }
+    return si;
 }

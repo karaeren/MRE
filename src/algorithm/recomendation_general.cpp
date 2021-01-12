@@ -96,4 +96,7 @@ int main() {
     for (int i = 0; i < 5; i++) {
         std::cout << i << " getRecommendations: " << std::get<1>(test2[i]) << "-" << std::get<0>(test2[i]) << "\n";
     }
+    unordered_map<string, unordered_map<string, int> > terscritics=b->transformPrefs(critics);
+    std::cout << terscritics["Lady in the Water"]["fatma"] << "\n";
+
 }
