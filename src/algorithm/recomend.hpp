@@ -1,15 +1,13 @@
-#include <tuple>
+#include <algorithm>
+#include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "similarity.hpp"
 
-using namespace std;
-
 class Recomend {
    public:
-    Recomend();
-    ~Recomend();
-
-    tuple<float, string>* TopMatches(unordered_map<string, unordered_map<string, int> > dataset, string person, Similarity* sim);
-    tuple<float, string>* getRecommendations(unordered_map<string, unordered_map<string, int> > dataset, string person, Similarity* sim);
+    std::vector<std::pair<std::string, float>> TopMatches(std::unordered_map<std::string, std::unordered_map<std::string, float>> dataset, std::string person, Similarity* sim);
+    std::vector<std::pair<std::string, float>> getRecommendations(std::unordered_map<std::string, std::unordered_map<std::string, float>> dataset, std::string person, Similarity* sim);
 };
