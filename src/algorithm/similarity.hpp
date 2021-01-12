@@ -3,18 +3,14 @@
 
 #include <math.h>
 
+#include <string>
 #include <unordered_map>
-
-using namespace std;
 
 class Similarity {
    public:
-    Similarity();
-    ~Similarity();
-
-    float sim_distance(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2);
-    float sim_pearson(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2);
-    unordered_map<string, unordered_map<string, int> > transformPrefs(unordered_map<string, unordered_map<string, int> > prefs);
+    float sim_distance(std::unordered_map<std::string, std::unordered_map<std::string, float> > prefs, std::string person1, std::string person2);
+    float sim_pearson(std::unordered_map<std::string, std::unordered_map<std::string, float> > prefs, std::string person1, std::string person2);
+    std::unordered_map<std::string, std::unordered_map<std::string, float> > transformPrefs(std::unordered_map<std::string, std::unordered_map<std::string, float> > prefs);
 };
 
 #endif

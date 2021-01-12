@@ -1,9 +1,9 @@
 #include "similarity.hpp"
 
-float Similarity::sim_distance(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2) {
-    unordered_map<string, int> si;
-    unordered_map<string, int> items_person1;
-    unordered_map<string, int> items_person2;
+float Similarity::sim_distance(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, std::string person1, std::string person2) {
+    std::unordered_map<std::string, float> si;
+    std::unordered_map<std::string, float> items_person1;
+    std::unordered_map<std::string, float> items_person2;
 
     items_person1 = prefs[person1];
     items_person2 = prefs[person2];
@@ -28,17 +28,17 @@ float Similarity::sim_distance(unordered_map<string, unordered_map<string, int> 
 
     float sum_of_squares = 0;
     for (auto x : si) {
-        string item = x.first;
+        std::string item = x.first;
         float farklar = (float)(prefs[person1][item] - prefs[person2][item]);
         sum_of_squares += pow(farklar, 2.0);
     }
     return 1 / (1 + sqrt(sum_of_squares));
 }
 //
-float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> > prefs, string person1, string person2) {
-    unordered_map<string, int> si;
-    unordered_map<string, int> items_person1;
-    unordered_map<string, int> items_person2;
+float Similarity::sim_pearson(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, std::string person1, std::string person2) {
+    std::unordered_map<std::string, float> si;
+    std::unordered_map<std::string, float> items_person1;
+    std::unordered_map<std::string, float> items_person2;
 
     items_person1 = prefs[person1];
     items_person2 = prefs[person2];
@@ -87,26 +87,18 @@ float Similarity::sim_pearson(unordered_map<string, unordered_map<string, int> >
 
     return result;
 }
-unordered_map<string, unordered_map<string, int> > Similarity::transformPrefs(unordered_map<string, unordered_map<string, int> > prefs) {
-    unordered_map<string, unordered_map<string, int>> si;
+std::unordered_map<std::string, std::unordered_map<std::string, float>> Similarity::transformPrefs(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs) {
+    std::unordered_map<std::string, std::unordered_map<std::string, float>> si;
 
-    for(auto person:prefs){
-        
-        for (auto item:prefs[person.first]){
-            unordered_map<string, int> si2;
-            if(si.find(item.first) == si.end()) {
+    for (auto person : prefs) {
+        for (auto item : prefs[person.first]) {
+            std::unordered_map<std::string, float> si2;
+            if (si.find(item.first) == si.end()) {
                 si[item.first] = {};
             }
-            si[item.first][person.first]=prefs[person.first][item.first];
+            si[item.first][person.first] = prefs[person.first][item.first];
         }
-
     }
+
     return si;
-}
-
-
-Similarity::Similarity() {
-}
-
-Similarity::~Similarity() {
 }

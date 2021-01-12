@@ -8,13 +8,13 @@
 
 using namespace std;
 
-unordered_map<string, int> ranks1;
-unordered_map<string, int> ranks2;
-unordered_map<string, int> ranks3;
-unordered_map<string, int> ranks4;
-unordered_map<string, int> ranks5;
-unordered_map<string, int> ranks6;
-unordered_map<string, unordered_map<string, int> > critics;
+unordered_map<string, float> ranks1;
+unordered_map<string, float> ranks2;
+unordered_map<string, float> ranks3;
+unordered_map<string, float> ranks4;
+unordered_map<string, float> ranks5;
+unordered_map<string, float> ranks6;
+unordered_map<string, unordered_map<string, float>> critics;
 
 /*
 Ustteki template declaration'lari istenilen tipteki container'in bir ornegi olarak tasarlanmistir
@@ -81,22 +81,25 @@ int main() {
         for (auto y : x.second) {
             cout << y.first << " : " << y.second << endl;
         }
-    };
-    string key = "kadir";
+    }
 
+    string key = "kadir";
     Recomend a{};
     Similarity* b = nullptr;
-    tuple<float, string>* test = a.TopMatches(critics, key, b);
 
-    for (int i = 0; i < 5; i++) {
-        std::cout << i << " topMatch: " << std::get<1>(test[i]) << "-" << std::get<0>(test[i]) << "\n";
-    }
     std::cout << "\n";
-    tuple<float, string>* test2 = a.getRecommendations(critics, key, b);
-    for (int i = 0; i < 5; i++) {
-        std::cout << i << " getRecommendations: " << std::get<1>(test2[i]) << "-" << std::get<0>(test2[i]) << "\n";
+    std::vector<std::pair<std::string, float>> vec1 = a.TopMatches(critics, key, b);
+    for (int i = 0; i < vec1.size(); i++) {
+        if (vec1[i].first.empty()) break;
+        std::cout << i << " topMatch: " << vec1[i].first << "-" << vec1[i].second << "\n";
     }
-    unordered_map<string, unordered_map<string, int> > terscritics=b->transformPrefs(critics);
-    std::cout << terscritics["Lady in the Water"]["fatma"] << "\n";
 
+    std::cout << "\n";
+    std::vector<std::pair<std::string, float>> vec2 = a.getRecommendations(critics, key, b);
+    for (int i = 0; i < vec2.size(); i++) {
+        std::cout << i << " getRecommendations: " << vec2[i].first << "-" << vec2[i].second << "\n";
+    }
+    std::unordered_map<std::string, std::unordered_map<std::string, float>> terscritics = b->transformPrefs(critics);
+    std::cout << terscritics["Lady in the Water"]["fatma"] << "\n";
+    std::cout << terscritics["Lady in the Water"]["eren"] << "\n";
 }
