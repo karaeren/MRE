@@ -19,6 +19,15 @@ std::vector<std::pair<std::string, float>> Recomend::TopMatches(std::unordered_m
     }
 
     scores.resize(20);  // only keep first 20 matches
+
+    // remove empty entries
+    int index = 0;
+    for (auto i : scores) {
+        index++;
+        if (!i.first.empty()) continue;
+        scores.erase(scores.begin() + index);
+    }
+
     return scores;
 }
 
@@ -86,20 +95,32 @@ std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> Reco
 
     return si;
 }
-std::vector<std::pair<std::string, float>> Recomend::getRecommendedItems(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs,  std::unordered_map<std::string, std::unordered_map<std::string, float>> itemSim,std::string user) {
-    std::unordered_map<std::string, float> scores, totalSim,userRatings=prefs[user];
-    for(auto item:userRatings){
-        for(auto item2: itemSim[item.first]){
-            for(auto rati:userRatings){
-                if (item2 != rati){
-                    scores={};
-                    scores[item2.first]+=item2.second*item.second;
-                    totalSim={};
-                    totalSim[item2.first]+=item2.second;
-                }
+
+std::vector<std::pair<std::string, float>> Recomend::getRecommendedItems(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> itemSim, std::string user) {
+    std::unordered_map<std::string, float> scores, totalSim, userRatings = prefs[user];
+
+    for (auto item : userRatings) {                     // for each movie the user rated
+        for (auto &element : itemSim) {                 // to find iterated move in the itemSim
+            if (element.first != item.first) continue;  // continue if it's not the movie we're looking for
+
+            for (auto &item2 : element.second) {                                   // check the similarity score of other movies to this movie
+                if (userRatings.find(item2.first) != userRatings.end()) continue;  // skip if user already watched this
+
+                if (scores.find(item2.first) == scores.end())
+                    scores[item2.first] = 0.0f;
+
+                scores[item2.first] += item2.second * item.second;
+
+                if (totalSim.find(item2.first) == scores.end())
+                    totalSim[item2.first] = 0.0f;
+
+                totalSim[item2.first] += item2.second;
             }
+
+            break;
         }
     }
+
     std::vector<std::pair<std::string, float>> rankings;
 
     for (auto i : scores) {
@@ -111,5 +132,4 @@ std::vector<std::pair<std::string, float>> Recomend::getRecommendedItems(std::un
     std::sort(rankings.begin(), rankings.end(), sortByVal);
 
     return rankings;
-
 }

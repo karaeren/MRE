@@ -78,7 +78,7 @@ int main() {
     critics["ahmet"] = ranks4;
     critics["mehmet"] = ranks5;
     critics["eren"] = ranks6;
-    critics["arafat"]=ranks7;
+    critics["arafat"] = ranks7;
 
     for (auto x : critics) {
         cout << endl;
@@ -104,15 +104,22 @@ int main() {
     for (int i = 0; i < vec2.size(); i++) {
         std::cout << i << " getRecommendations: " << vec2[i].first << "-" << vec2[i].second << "\n";
     }
+
     std::unordered_map<std::string, std::unordered_map<std::string, float>> terscritics = b->transformPrefs(critics);
-    std::cout << terscritics["Lady in the Water"]["arafat"] << "\n";
+    std::cout << "terscritics " << terscritics["Lady in the Water"]["arafat"] << "\n";
     std::cout << terscritics["Lady in the Water"]["eren"] << "\n";
+
     std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> similaritems = a.calculateSimilarItem(critics, b);
     for (const auto& [key, value] : similaritems) {
         std::cout << key << " is key\n";
         for (auto x : value) {
-            if(x.first.empty()) break;
             std::cout << "\tfirst=" << x.first << ", second=" << x.second << "\n";
         }
+    }
+
+    std::vector<std::pair<std::string, float>> testItemRec = a.getRecommendedItems(critics, similaritems, key);
+
+    for (auto& reco : testItemRec) {
+        std::cout << "Recommending movie " << reco.first << " with a score of " << reco.second << "\n";
     }
 }
