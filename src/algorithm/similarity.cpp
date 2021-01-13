@@ -89,7 +89,6 @@ float Similarity::sim_pearson(std::unordered_map<std::string, std::unordered_map
 }
 std::unordered_map<std::string, std::unordered_map<std::string, float>> Similarity::transformPrefs(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs) {
     std::unordered_map<std::string, std::unordered_map<std::string, float>> si;
-
     for (auto person : prefs) {
         for (auto item : prefs[person.first]) {
             std::unordered_map<std::string, float> si2;

@@ -86,3 +86,30 @@ std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> Reco
 
     return si;
 }
+std::vector<std::pair<std::string, float>> Recomend::getRecommendedItems(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs,  std::unordered_map<std::string, std::unordered_map<std::string, float>> itemSim,std::string user) {
+    std::unordered_map<std::string, float> scores, totalSim,userRatings=prefs[user];
+    for(auto item:userRatings){
+        for(auto item2: itemSim[item.first]){
+            for(auto rati:userRatings){
+                if (item2 != rati){
+                    scores={};
+                    scores[item2.first]+=item2.second*item.second;
+                    totalSim={};
+                    totalSim[item2.first]+=item2.second;
+                }
+            }
+        }
+    }
+    std::vector<std::pair<std::string, float>> rankings;
+
+    for (auto i : scores) {
+        std::pair<std::string, float> rank;
+        rank = make_pair(i.first, i.second / totalSim[i.first]);
+        rankings.push_back(rank);
+    }
+
+    std::sort(rankings.begin(), rankings.end(), sortByVal);
+
+    return rankings;
+
+}
