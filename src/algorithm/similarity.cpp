@@ -92,9 +92,9 @@ std::unordered_map<std::string, std::unordered_map<std::string, float>> Similari
     for (auto person : prefs) {
         for (auto item : prefs[person.first]) {
             std::unordered_map<std::string, float> si2;
-            if (si.find(item.first) == si.end()) {
+            if (si.find(item.first) == si.end())
                 si[item.first] = {};
-            }
+
             si[item.first][person.first] = prefs[person.first][item.first];
         }
     }

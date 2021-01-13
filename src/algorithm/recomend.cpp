@@ -51,12 +51,16 @@ std::vector<std::pair<std::string, float>> Recomend::getRecommendations(std::uno
 
                 if (person_already_watched_movie == false || dataset[person][item.first] == 0) {
                     //Similarity * Score
-                    totals[item.first] = 0.0f;  //burası kanka
+                    if (totals.find(item.first) == totals.end())
+                        totals[item.first] = 0.0f;
+
                     totals[item.first] += dataset[other.first][item.first] * sim_value;
                     len_totals += 1;
 
                     //Sum of similarities
-                    simSums[item.first] = 0.0f;
+                    if (simSums.find(item.first) == simSums.end())
+                        simSums[item.first] = 0.0f;
+
                     simSums[item.first] += sim_value;
                 }
             }
