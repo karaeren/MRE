@@ -16,16 +16,20 @@ class JsonDB {
         file_location = location;
     }
 
+    void setLocation(std::string location) {
+        file_location = location;
+    }
+
     bool fileExists() {
         std::ifstream file(file_location);
         return file.good();
     }
-    
+
     std::string readFile(std::string defaultEntry = "") {
         std::string fileContent, lineContent;
         std::ifstream file(file_location);
 
-        if(!file.good())
+        if (!file.good())
             return defaultEntry;
 
         while (std::getline(file, lineContent)) {

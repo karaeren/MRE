@@ -14,7 +14,7 @@ class UserDB : public JsonDB {
     bool addRating(std::string username, int movieId, float rating);
     bool deleteUser(std::string username);
 
-    std::unordered_map<std::string, int> getUserRatings(std::string username);
+    std::unordered_map<std::string, float> getUserRatings(std::string username);
 };
 
 #endif

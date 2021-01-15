@@ -13,6 +13,10 @@ add_library(${project_name}-lib
         src/controller/MyController.cpp
         src/controller/MyController.hpp
         src/dto/DTOs.hpp
+        src/algorithm/similarity.cpp
+        src/algorithm/similarity.hpp
+        src/algorithm/recomend.cpp
+        src/algorithm/recomend.hpp
         src/db/jsonDb.hpp
         src/db/userDb.cpp
         src/db/userDb.hpp
