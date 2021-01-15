@@ -17,16 +17,7 @@ class RootDTO : public oatpp::DTO {
 
     DTO_FIELD(Int32, statusCode);
 
-    DTO_FIELD(String, message);
-};
-
-class MoviesDTO : public oatpp::DTO {
-    DTO_INIT(MoviesDTO, DTO)
-
-    DTO_FIELD(Int32, statusCode);
-
-    DTO_FIELD(Int32, page);
-    DTO_FIELD(String, movies);
+    DTO_FIELD(String, result);
 };
 
 class RecommendedMoviesDTO : public oatpp::DTO {
@@ -34,7 +25,7 @@ class RecommendedMoviesDTO : public oatpp::DTO {
 
     DTO_FIELD(Int32, statusCode);
 
-    DTO_FIELD(String, movies);
+    DTO_FIELD(String, result);
 };
 
 class RateMovieDTO : public oatpp::DTO {
