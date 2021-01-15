@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "db/jsonDb.hpp"
+#include "db/userDb.hpp"
 #include "dto/DTOs.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
@@ -101,8 +102,17 @@ class MyController : public oatpp::web::server::api::ApiController {
 
         auto dto = RateMovieDTO::createShared();
 
+        UserDB udb_instance("../data/user.json");
+        bool test = udb_instance.addRating(username->std_str(), movieId, rating);
+
+        std::cout << "Kullanicinin filmlerini getUserRatings'den aliyoruz:\n";
+        std::unordered_map<std::string, int> test_map = udb_instance.getUserRatings(username->std_str());
+        for (auto x : test_map) {
+            std::cout << username->std_str() << " voted " << x.first << " with a score of " << x.second << "\n";
+        }
+        
         dto->statusCode = 200;
-        dto->result = "Success";
+        dto->result = "success";
 
         return createDtoResponse(Status::CODE_200, dto);
     }

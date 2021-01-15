@@ -13,6 +13,9 @@ add_library(${project_name}-lib
         src/controller/MyController.cpp
         src/controller/MyController.hpp
         src/dto/DTOs.hpp
+        src/db/jsonDb.hpp
+        src/db/userDb.cpp
+        src/db/userDb.hpp
 )
 
 ## link libs
