@@ -76,6 +76,7 @@ std::vector<std::pair<std::string, float>> Recomend::getRecommendations(std::uno
     }
 
     std::sort(rankings.begin(), rankings.end(), sortByVal);
+    rankings.resize(100);  // only 100 recommendations
 
     return rankings;
 }
@@ -84,14 +85,8 @@ std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> Reco
     std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> si;
     std::unordered_map<std::string, std::unordered_map<std::string, float>> itemPrefs;
 
-    int bayrak = 0;
-    int n = 10;
     itemPrefs = sim->transformPrefs(prefs);
     for (auto item : itemPrefs) {
-        bayrak += 1;
-        if (bayrak % 100 == 0) {
-            //ekrana yazdırmamıza gerek yok
-        }
         std::vector<std::pair<std::string, float>> scores;
         scores = TopMatches(itemPrefs, item.first, sim);
         si[item.first] = scores;
