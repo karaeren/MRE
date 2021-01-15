@@ -1,6 +1,6 @@
 #include "similarity.hpp"
 
-float Similarity::sim_distance(std::unordered_map<std::string, std::unordered_map<std::string, float> > prefs, std::string person1, std::string person2) {
+float Similarity::sim_distance(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, std::string person1, std::string person2) {
     std::unordered_map<std::string, float> si;
     std::unordered_map<std::string, float> items_person1;
     std::unordered_map<std::string, float> items_person2;
@@ -35,7 +35,7 @@ float Similarity::sim_distance(std::unordered_map<std::string, std::unordered_ma
     return 1 / (1 + sqrt(sum_of_squares));
 }
 //
-float Similarity::sim_pearson(std::unordered_map<std::string, std::unordered_map<std::string, float> > prefs, std::string person1, std::string person2) {
+float Similarity::sim_pearson(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, std::string person1, std::string person2) {
     std::unordered_map<std::string, float> si;
     std::unordered_map<std::string, float> items_person1;
     std::unordered_map<std::string, float> items_person2;
@@ -86,4 +86,18 @@ float Similarity::sim_pearson(std::unordered_map<std::string, std::unordered_map
     result = gecici / den;
 
     return result;
+}
+std::unordered_map<std::string, std::unordered_map<std::string, float>> Similarity::transformPrefs(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs) {
+    std::unordered_map<std::string, std::unordered_map<std::string, float>> si;
+    for (auto person : prefs) {
+        for (auto item : prefs[person.first]) {
+            std::unordered_map<std::string, float> si2;
+            if (si.find(item.first) == si.end())
+                si[item.first] = {};
+
+            si[item.first][person.first] = prefs[person.first][item.first];
+        }
+    }
+
+    return si;
 }

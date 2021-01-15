@@ -19,6 +19,15 @@ std::vector<std::pair<std::string, float>> Recomend::TopMatches(std::unordered_m
     }
 
     scores.resize(20);  // only keep first 20 matches
+
+    // remove empty entries
+    int index = 0;
+    for (auto i : scores) {
+        index++;
+        if (!i.first.empty()) continue;
+        scores.erase(scores.begin() + index);
+    }
+
     return scores;
 }
 
@@ -42,12 +51,16 @@ std::vector<std::pair<std::string, float>> Recomend::getRecommendations(std::uno
 
                 if (person_already_watched_movie == false || dataset[person][item.first] == 0) {
                     //Similarity * Score
-                    totals[item.first] = 0.0f;
+                    if (totals.find(item.first) == totals.end())
+                        totals[item.first] = 0.0f;
+
                     totals[item.first] += dataset[other.first][item.first] * sim_value;
                     len_totals += 1;
 
                     //Sum of similarities
-                    simSums[item.first] = 0.0f;
+                    if (simSums.find(item.first) == simSums.end())
+                        simSums[item.first] = 0.0f;
+
                     simSums[item.first] += sim_value;
                 }
             }
@@ -59,6 +72,64 @@ std::vector<std::pair<std::string, float>> Recomend::getRecommendations(std::uno
     for (auto i : totals) {
         std::pair<std::string, float> rank;
         rank = make_pair(i.first, i.second / simSums[i.first]);
+        rankings.push_back(rank);
+    }
+
+    std::sort(rankings.begin(), rankings.end(), sortByVal);
+
+    return rankings;
+}
+
+std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> Recomend::calculateSimilarItem(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, Similarity *sim) {
+    std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> si;
+    std::unordered_map<std::string, std::unordered_map<std::string, float>> itemPrefs;
+
+    int bayrak = 0;
+    int n = 10;
+    itemPrefs = sim->transformPrefs(prefs);
+    for (auto item : itemPrefs) {
+        bayrak += 1;
+        if (bayrak % 100 == 0) {
+            //ekrana yazdırmamıza gerek yok
+        }
+        std::vector<std::pair<std::string, float>> scores;
+        scores = TopMatches(itemPrefs, item.first, sim);
+        si[item.first] = scores;
+    }
+
+    return si;
+}
+
+std::vector<std::pair<std::string, float>> Recomend::getRecommendedItems(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> itemSim, std::string user) {
+    std::unordered_map<std::string, float> scores, totalSim, userRatings = prefs[user];
+
+    for (auto item : userRatings) {                     // for each movie the user rated
+        for (auto &element : itemSim) {                 // to find iterated move in the itemSim
+            if (element.first != item.first) continue;  // continue if it's not the movie we're looking for
+
+            for (auto &item2 : element.second) {                                   // check the similarity score of other movies to this movie
+                if (userRatings.find(item2.first) != userRatings.end()) continue;  // skip if user already watched this
+
+                if (scores.find(item2.first) == scores.end())
+                    scores[item2.first] = 0.0f;
+
+                scores[item2.first] += item2.second * item.second;
+
+                if (totalSim.find(item2.first) == scores.end())
+                    totalSim[item2.first] = 0.0f;
+
+                totalSim[item2.first] += item2.second;
+            }
+
+            break;
+        }
+    }
+
+    std::vector<std::pair<std::string, float>> rankings;
+
+    for (auto i : scores) {
+        std::pair<std::string, float> rank;
+        rank = make_pair(i.first, i.second / totalSim[i.first]);
         rankings.push_back(rank);
     }
 
