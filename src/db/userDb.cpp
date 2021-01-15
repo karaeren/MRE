@@ -17,7 +17,7 @@ bool UserDB::addRating(std::string username, int movieId, float rating) {
 
     // add movie to users rating list
     auto& allocator = d.GetAllocator();
-    if (!d.HasMember(username.c_str())) { // first entry of user
+    if (!d.HasMember(username.c_str())) {                   // first entry of user
         rapidjson::Value userData(rapidjson::kObjectType);  // empty object
 
         rapidjson::Value movie;
@@ -34,7 +34,7 @@ bool UserDB::addRating(std::string username, int movieId, float rating) {
 
         std::string s = std::to_string(movieId);
         rapidjson::Value movieKey(s.c_str(), s.size(), allocator);
-        
+
         // check for duplicates
         if (userData.HasMember(movieKey)) return false;
 
@@ -62,13 +62,21 @@ bool UserDB::deleteUser(std::string username) {
     return true;
 }
 
-std::unordered_map<std::string, int> UserDB::getUserRatings(std::string username) {
-    static std::unordered_map<std::string, int> result;
+std::unordered_map<std::string, float> UserDB::getUserRatings(std::string username) {
+    std::unordered_map<std::string, float> result;  // sonuç objesi
 
-    // add users movies into static unordered map and return it.
-    // example way to add it.
-    result["Lord of The Rings"] = 5.0;
-    result["Hobbit"] = 4.0;
+    std::string dbContent = readFile("{}");  // dosyayı oku
+    rapidjson::Document d;
+    d.Parse(dbContent.c_str());  // dosyayı json objesine dönüştür
+
+    if (d.HasMember(username.c_str())) {                     // eğer kullanıcı databasede varsa
+        const rapidjson::Value& user = d[username.c_str()];  // kullanıcı objesi
+        for (auto& movie : user.GetObject()) {               // kullanıcının filmlerini döndür
+            result[movie.name.GetString()] = movie.value.GetFloat();
+        }
+    } else {  // yoksa boş döndür
+        return result;
+    }
 
     return result;
 }
