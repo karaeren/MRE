@@ -80,6 +80,7 @@ class MyController : public oatpp::web::server::api::ApiController {
     ENDPOINT_INFO(recommendedMovies) {
         info->summary = "List recommended movies for the user based on their preferences.";
     }
+    ADD_CORS(recommendedMovies);
     ENDPOINT("GET", "recommended-movies", recommendedMovies,
              QUERY(String, username, "u"),
              QUERY(String, type, "t")) {
@@ -150,6 +151,7 @@ class MyController : public oatpp::web::server::api::ApiController {
     ENDPOINT_INFO(rateMovie) {
         info->summary = "Let the user rate a movie from 1 to 5 (0.5 increments).";
     }
+    ADD_CORS(rateMovie);
     ENDPOINT("GET", "/rate-movie", rateMovie,
              QUERY(String, username, "u"),
              QUERY(Int32, movieId, "m"),
