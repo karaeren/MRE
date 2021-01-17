@@ -83,19 +83,28 @@ std::vector<std::pair<std::string, float>> Recomend::getRecommendations(std::uno
     return rankings;
 }
 
+
+
 std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> Recomend::calculateSimilarItem(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, Similarity *sim) {
-    std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> si;
+  //  Create a heap of items showing which other items they are most similar to. 
+  std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> si;
+  
+  
+  // Invert the preference matrix to be item-centric
     std::unordered_map<std::string, std::unordered_map<std::string, float>> itemPrefs;
 
     itemPrefs = sim->transformPrefs(prefs);
     for (auto item : itemPrefs) {
         std::vector<std::pair<std::string, float>> scores;
+        
+        //Find the most similar items to this one
         scores = TopMatches(itemPrefs, item.first, sim);
         si[item.first] = scores;
     }
 
     return si;
 }
+
 
 std::vector<std::pair<std::string, float>> Recomend::getRecommendedItems(std::unordered_map<std::string, std::unordered_map<std::string, float>> prefs, std::unordered_map<std::string, std::vector<std::pair<std::string, float>>> itemSim, std::string user) {
     std::unordered_map<std::string, float> scores, totalSim, userRatings = prefs[user];
@@ -126,11 +135,12 @@ std::vector<std::pair<std::string, float>> Recomend::getRecommendedItems(std::un
 
     for (auto i : scores) {
         std::pair<std::string, float> rank;
+      //Divide each total score by total weighting to get an average
         rank = make_pair(i.first, i.second / totalSim[i.first]);
         rankings.push_back(rank);
     }
-
+    
+    //Return the rankings from highest to lowest
     std::sort(rankings.begin(), rankings.end(), sortByVal);
-
     return rankings;
 }
