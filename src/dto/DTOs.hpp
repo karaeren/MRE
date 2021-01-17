@@ -1,3 +1,8 @@
+/**
+    Data Transfer Object entry file.
+    @file DTOS.HPP
+*/
+
 #ifndef DTOs_hpp
 #define DTOs_hpp
 

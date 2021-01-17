@@ -1,3 +1,8 @@
+/**
+    Main entry for the project.
+    @file App.cpp
+*/
+
 #include <iostream>
 
 #include "./AppComponent.hpp"

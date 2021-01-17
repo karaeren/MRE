@@ -1,3 +1,8 @@
+/**
+    Controller file. Endpoints and their purpouses and also their functions are decided here.
+    @file MyController.HPP
+*/
+
 #ifndef MyController_hpp
 #define MyController_hpp
 
@@ -23,7 +28,8 @@
 
 class MyController : public oatpp::web::server::api::ApiController {
    private:
-    std::unordered_map<std::string, std::unordered_map<std::string, float>> critics;
+    std::unordered_map<std::string, std::unordered_map<std::string, float>> critics;  // Algorithms use this file to parse every rating there is.
+    // Instances for classes that are used by algorithms and endpoints
     Similarity* sim_class;
     Recomend reco_class;
     UserDB* udb_instance;
@@ -35,12 +41,16 @@ class MyController : public oatpp::web::server::api::ApiController {
    */
     MyController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
         : oatpp::web::server::api::ApiController(objectMapper) {
+        // initialize instances with empty new classes
         sim_class = nullptr;
         reco_class = {};
         udb_instance = new UserDB("../data/user.json");
 
         std::cout << "Starting to parse the dataset...\n";
 
+        // This is where the dataset for movie ratings are held
+        // because there is no __dirname and such, it is important
+        // to run the program from the "dist" directory.
         JsonDB db("../data/ratings.json");
         const std::string dbContent = db.readFile();
 
@@ -68,6 +78,9 @@ class MyController : public oatpp::web::server::api::ApiController {
     }
 
    public:
+    /*
+    Root endpoint. Currently used for nothing so we just display server status...
+   */
     ENDPOINT("GET", "/", root) {
         auto dto = RootDTO::createShared();
 
@@ -86,13 +99,17 @@ class MyController : public oatpp::web::server::api::ApiController {
              QUERY(String, type, "t")) {
         auto dto = RecommendedMoviesDTO::createShared();
 
+        // get user from db
         std::unordered_map<std::string, float> user_ratings = udb_instance->getUserRatings(username->std_str());
 
+        // check if user is persistent in the critics map
+        // create a new entry if not
         if (critics.find(username->std_str()) == critics.end()) {
             std::unordered_map<std::string, float> temp;
             critics[username->std_str()] = temp;
         }
 
+        // for each user rating, add/update it on the critics map
         for (auto x : user_ratings) {
             auto ele = critics.find(username->std_str());
             ele->second[x.first] = x.second;
@@ -121,6 +138,7 @@ class MyController : public oatpp::web::server::api::ApiController {
             return createDtoResponse(Status::CODE_406, dto);
         }
 
+        // create a new Document object for sending the results
         rapidjson::Document d;
         d.SetObject();
         rapidjson::Document::AllocatorType& allocator = d.GetAllocator();
@@ -128,6 +146,7 @@ class MyController : public oatpp::web::server::api::ApiController {
         rapidjson::Value movies(rapidjson::kObjectType);
         rapidjson::Value val(rapidjson::kObjectType);
 
+        // add each recommended movie to the temporary value
         for (int i = 0; i < recommendedMovies.size(); i++) {
             if (recommendedMovies[i].first.empty()) break;
 
@@ -136,12 +155,15 @@ class MyController : public oatpp::web::server::api::ApiController {
             movies.AddMember(movieKey, val, allocator);
         }
 
+        // add the temporary value to the document
         d.AddMember("movies", movies, allocator);
 
+        // stringify document
         rapidjson::StringBuffer buffer;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
         d.Accept(writer);
 
+        // send the stringified JSON document
         dto->result = buffer.GetString();
         dto->statusCode = 200;
 
@@ -157,7 +179,7 @@ class MyController : public oatpp::web::server::api::ApiController {
              QUERY(Int32, movieId, "m"),
              QUERY(Float32, rating, "r")) {
         auto dto = RateMovieDTO::createShared();
-
+        // add new rating to the db under the name of the user and see if it's ok
         bool rating_added = udb_instance->addRating(username->std_str(), movieId, rating);
 
         if (rating_added) {
