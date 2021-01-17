@@ -31,9 +31,11 @@ std::vector<std::pair<std::string, float>> Recomend::TopMatches(std::unordered_m
     return scores;
 }
 
+
+//Gets recommendations for a person by using a weighted average of every other user's rankings
 std::vector<std::pair<std::string, float>> Recomend::getRecommendations(std::unordered_map<std::string, std::unordered_map<std::string, float>> dataset, std::string person, Similarity *sim) {
     std::unordered_map<std::string, float> totals, simSums;
-
+    
     int len_totals = 0;
     for (auto other : dataset) {
         if (other.first == person) continue;
